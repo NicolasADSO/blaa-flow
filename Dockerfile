@@ -19,7 +19,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Instalar dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Generar assets de Vite (si prefieres puedes hacerlo en GitHub Actions)
+# Generar assets de Vite
 RUN apt-get install -y nodejs npm \
     && npm install \
     && npm run build
@@ -30,5 +30,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Exponer puerto
 EXPOSE 80
 
-# Ejecutar migraciones y luego arrancar Laravel
-CMD php artisan migrate --seed --force && php artisan serve --host=0.0.0.0 --port=80
+# Comando para correr Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]

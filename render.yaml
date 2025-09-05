@@ -12,7 +12,19 @@ services:
         value: false
       - key: APP_KEY
         generateValue: true
+      - key: APP_URL
+        value: https://blaa-flow.onrender.com
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
         value: /var/www/html/database/database.sqlite
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FILESYSTEM_DISK
+        value: public
+    buildCommand: |
+      php artisan migrate --seed --force
