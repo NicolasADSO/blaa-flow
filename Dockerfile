@@ -5,7 +5,7 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y \
     unzip git curl libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev zip \
     libicu-dev g++ \
-    && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl intl
+    && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl intl bcmath
 
 # Configurar Apache
 RUN a2enmod rewrite
