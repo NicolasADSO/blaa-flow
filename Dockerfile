@@ -4,7 +4,8 @@ FROM php:8.2-apache
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     unzip git curl libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev zip \
-    && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl
+    libicu-dev g++ \
+    && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl intl
 
 # Configurar Apache
 RUN a2enmod rewrite
@@ -30,5 +31,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Exponer puerto
 EXPOSE 80
 
-# Comando para correr Laravel
+# Comando por defecto (Render.yaml manejará migraciones)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
