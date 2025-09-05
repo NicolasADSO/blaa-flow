@@ -1,0 +1,414 @@
+/* =========================
+ * Animaciones globales
+ ************************/
+@keyframes fade-slide-up {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ripple {
+  0% { width:0; height:0; opacity:.45; }
+  100% { width:420px; height:420px; opacity:0; }
+}
+
+@keyframes bar-grow { to { transform: scaleY(1); } }
+
+@keyframes line-slide {
+  from { background-position:200% 0; }
+  to   { background-position:-200% 0; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Ripple genérico (sidebar & navbar usan la misma clase) */
+._ripple{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  transform:translate(-50%,-50%) scale(0);
+  background: radial-gradient(circle, rgba(255,255,255,.35) 0%, rgba(255,255,255,.15) 40%, rgba(255,255,255,0) 70%);
+  animation: ripple .6s ease-out forwards;
+}
+
+/* =========================
+   🎨 Variables corporativas
+   ========================= */
+:root{
+  --gadier-red: #990f0c;
+  --gadier-red-700:#7f0c0a;
+  --gadier-dark:#111111;
+}
+
+/* Utilidades */
+.animate-fade-slide-up { animation: fade-slide-up 0.6s ease forwards !important; }
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(0,0,0,0.15), 0 0 40px rgba(0,0,0,0.1);
+  transform: translateY(-6px) scale(1.03);
+  transition: all 0.3s ease;
+}
+
+/* =========================
+   🧭 SIDEBAR
+   ========================= */
+.fi-sidebar{
+  background: linear-gradient(180deg,#141414 0%,#0f0f10 100%) !important;
+  color:#fff !important;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.05), 0 10px 28px rgba(0,0,0,.28) !important;
+  position:relative;
+}
+
+.fi-sidebar-nav a{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:.625rem;
+  margin:.25rem .5rem;
+  padding:.625rem .75rem;
+  color:rgba(255,255,255,.88) !important;
+  border-radius:.65rem;
+  transition:
+    background-color .25s ease,
+    color .25s ease,
+    transform .18s ease,
+    box-shadow .25s ease;
+  overflow:hidden; /* ripple */
+}
+
+.fi-sidebar-nav a:hover{
+  background: rgba(255,255,255,.08);
+  transform: translateX(2px);
+}
+
+.fi-sidebar-nav a.fi-active{
+  background:#fff !important;
+  color:var(--gadier-red) !important;
+  font-weight:700 !important;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+  transform:none;
+}
+.fi-sidebar-nav a.fi-active *,
+.fi-sidebar-nav a.fi-active svg,
+.fi-sidebar-nav a.fi-active svg *{
+  color:var(--gadier-red) !important;
+  stroke:var(--gadier-red) !important;
+  fill: currentColor !important;
+}
+.fi-sidebar-nav a.fi-active::before{
+  content:"";
+  position:absolute;
+  left:-6px; top:8px; bottom:8px;
+  width:3px; border-radius:9999px;
+  background:linear-gradient(180deg,var(--gadier-red),var(--gadier-red-700));
+  transform:scaleY(0);
+  transform-origin:center bottom;
+  animation:bar-grow .25s ease forwards;
+}
+
+.fi-sidebar .fi-sidebar-group > button + ul{
+  transition: opacity .22s ease, transform .22s ease;
+}
+.fi-sidebar .fi-sidebar-group > button[aria-expanded="false"] + ul{
+  opacity:0; transform: translateY(-4px);
+  pointer-events: none;
+}
+.fi-sidebar .fi-sidebar-group > button[aria-expanded="true"] + ul{
+  opacity:1; transform: translateY(0);
+  pointer-events: auto;
+}
+
+.fi-sidebar-nav a:focus-visible{
+  box-shadow: 0 0 0 3px rgba(153,15,12,.45), 0 0 0 5px rgba(153,15,12,.22) !important;
+  outline: none !important;
+}
+
+/* Scrollbar del sidebar */
+.fi-sidebar::-webkit-scrollbar { width: 6px; }
+.fi-sidebar::-webkit-scrollbar-track { background: #0f0f10; }
+.fi-sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gadier-red), var(--gadier-red-700));
+  border-radius: 10px;
+  border: 2px solid #0f0f10;
+}
+.fi-sidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #b61410, #7f0c0a);
+}
+
+/* =========================
+   🔝 NAVBAR
+   ========================= */
+.fi-header,
+.fi-topbar{
+  background: rgba(255,255,255,.9) !important;
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  box-shadow: 0 4px 15px rgba(0,0,0,.22) !important;
+  transition: box-shadow .3s ease, background .3s ease;
+  position:relative;
+  z-index:60;
+}
+.fi-header:hover,
+.fi-topbar:hover{
+  box-shadow: 0 6px 22px rgba(153,15,12,.32), 0 0 22px rgba(153,15,12,.16) !important;
+}
+.fi-header::after,
+.fi-topbar::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0; height:3px;
+  background: linear-gradient(90deg, var(--gadier-red), var(--gadier-red-700), var(--gadier-red));
+  background-size: 200% 100%;
+  animation: line-slide 4s linear infinite;
+}
+
+.fi-header img.fi-logo,
+.fi-topbar img.fi-logo{
+  max-height:60px;
+  transition: transform .25s ease;
+}
+.fi-header img.fi-logo:hover,
+.fi-topbar img.fi-logo:hover{ transform: scale(1.05) rotate(-1deg); }
+
+.fi-header .fi-user-avatar,
+.fi-topbar .fi-user-avatar{
+  border:2px solid var(--gadier-red);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.fi-header .fi-user-avatar:hover,
+.fi-topbar .fi-user-avatar:hover{
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(153,15,12,.55);
+}
+
+.fi-header.scrolled,
+.fi-topbar.scrolled{
+  background: linear-gradient(90deg,#111,var(--gadier-red)) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+}
+
+.fi-header input[type="search"],
+.fi-topbar input[type="search"]{
+  border-radius:.65rem !important;
+  border:1px solid rgba(0,0,0,.08) !important;
+  padding-left: 2.4rem;
+  background-image: none !important;
+  background-color: #fff !important;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+.fi-header input[type="search"]:focus,
+.fi-topbar input[type="search"]:focus{
+  border-color: var(--gadier-red) !important;
+  box-shadow: 0 0 0 4px rgba(153,15,12,.18) !important;
+}
+
+/* =========================
+   🧩 Dropdowns / Menús
+   ========================= */
+.fi-main { overflow: visible !important; }
+.fi-main::before { z-index: 0; }
+
+.fi-dropdown-panel,
+.filament-dropdown-panel,
+.fi-user-menu,
+.fi-dropdown,
+[role="menu"] {
+  z-index: 70 !important;
+}
+
+/* ======== FIX MENÚ DE PERFIL ======== */
+.fi-header,
+.fi-topbar { overflow: visible !important; }
+
+.fi-header::after,
+.fi-topbar::after { pointer-events: none; z-index: 0; }
+
+.fi-dropdown-panel,
+.filament-dropdown-panel { z-index: 100 !important; }
+
+.fi-user-menu { position: relative !important; overflow: visible !important; }
+
+.fi-user-menu .fi-dropdown-panel,
+.fi-user-menu .filament-dropdown-panel {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
+  margin-top: 0 !important;
+  min-width: 12rem;
+  max-height: min(70vh, 480px);
+  overflow: auto;
+}
+
+.fi-user-menu[data-popper-placement^="top"] .fi-dropdown-panel,
+.fi-user-menu[data-popper-placement^="top"] .filament-dropdown-panel {
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+/* =========================
+   🧱 Fondo del panel
+   ========================= */
+.fi-main {
+  background: linear-gradient(180deg, #f5f5f5 0%, #fafafa 50%, #ffffff 100%) !important;
+  backdrop-filter: blur(6px);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  position: relative;
+}
+.fi-main::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(45deg,
+      rgba(153,15,12,0.01) 25%, transparent 25%,
+      transparent 50%, rgba(153,15,12,0.01) 50%,
+      rgba(153,15,12,0.01) 75%, transparent 75%);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* =========================
+   🗂 Cards
+   ========================= */
+.fi-card {
+  background: rgba(255,255,255,0.9);
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  animation: fade-in-up 0.6s ease-in-out;
+}
+.fi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15), 0 0 12px rgba(153,15,12,0.2);
+}
+
+.filament-widgets-chart,
+.filament-widgets-table {
+  animation: fade-in-up 0.6s ease-in-out;
+}
+
+/* =========================
+   🌐 Scrollbars globales
+   ========================= */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.fi-main::-webkit-scrollbar,
+.fi-sidebar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.fi-main::-webkit-scrollbar-track,
+.fi-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.fi-main::-webkit-scrollbar-thumb,
+.fi-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(153, 15, 12, 0.2);
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+.fi-main::-webkit-scrollbar-thumb:hover,
+.fi-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(153, 15, 12, 0.6);
+}
+
+/* =========================
+   🎟 LOGIN — Fondo oscuro fijo + tarjeta blanca
+   ========================= */
+
+/* Fondo oscuro para el login */
+.fi-simple-layout {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 600px at 90% -10%, rgba(153,15,12,.18), transparent 60%),
+    radial-gradient(1200px 900px at -20% 110%, rgba(0,0,0,.18), transparent 60%),
+    linear-gradient(180deg, #0f0f10 0%, #141415 60%, #0f0f10 100%) !important;
+}
+.fi-simple-layout::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(153,15,12,0.025) 0 10px,
+      rgba(153,15,12,0) 10px 20px
+    );
+  pointer-events: none;
+}
+
+/* Tarjeta blanca siempre */
+:root { color-scheme: light; }
+
+.fi-auth-card {
+  background: rgba(255,255,255,0.96) !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.06) !important;
+  position: relative;
+  color: #111 !important;
+}
+.fi-auth-card::before{
+  content:"";
+  position:absolute; inset: 0 0 auto 0; height: 8px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, rgba(153,15,12,.25), rgba(153,15,12,0), rgba(153,15,12,.25));
+  opacity:.4; pointer-events:none;
+}
+
+/* Inputs siempre claros */
+.fi-auth-card input[type="email"],
+.fi-auth-card input[type="password"],
+.fi-auth-card input[type="text"] {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid rgba(2,6,23,.12) !important;
+  height: 46px;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+}
+.fi-auth-card input:focus {
+  border-color: var(--gadier-red) !important;
+  box-shadow: 0 0 0 4px rgba(153,15,12,.18) !important;
+}
+.fi-auth-card input::placeholder { color: #6b7280; opacity: .9; }
+.fi-auth-card input:-webkit-autofill {
+  -webkit-text-fill-color: #111;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Checkbox, enlaces, botón submit (manteniendo tu diseño actual) */
+.fi-auth-card label { color:#1f2937; }
+.fi-auth-card input[type="checkbox"]{ accent-color: var(--gadier-red); }
+.fi-auth-card a{ color: var(--gadier-red); }
+.fi-auth-card a:hover{ text-decoration: underline; }
+.fi-auth-card button[type="submit"],
+.fi-auth-card .fi-btn[type="submit"]{
+  height: 46px;
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, var(--gadier-red), var(--gadier-red-700)) !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px;
+  color: #fff !important;
+  box-shadow: 0 8px 16px rgba(153,15,12,.28);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.fi-auth-card button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(153,15,12,.34); }
+.fi-auth-card button[type="submit"]:active { transform: translateY(0); }
+
+/* Errores */
+.fi-auth-card .fi-error,
+.fi-auth-card .fi-validation-error,
+.fi-auth-card .text-danger { color:#b91c1c !important; }

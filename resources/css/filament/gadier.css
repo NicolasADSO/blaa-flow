@@ -1,0 +1,153 @@
+/* 1) Importa overrides primero (PostCSS feliz).
+   2) Los overrides usan @layer utilities para ganar a todo lo de abajo. */
+@import "../custom-dashboard.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Base neutral para Filament (sin animaciones ni acentos fuertes) === */
+@layer components {
+  :root {
+    --fi-color-primary: 153 15 12;      /* Rojo base */
+    --fi-color-primary-600: 127 12 10;  /* Rojo más oscuro */
+
+    --fi-color-gray-50: 248 249 250;
+    --fi-color-gray-100: 233 236 239;
+    --fi-color-gray-500: 108 117 125;
+    --fi-color-gray-900: 33 37 41;
+
+    --fi-sidebar-background: 17 17 17;
+    --fi-header-background: 255 255 255;
+    --fi-body-background: 248 249 250;
+  }
+
+  /* Sidebar base sobrio */
+  .fi-sidebar {
+    background-color: rgb(var(--fi-sidebar-background));
+    box-shadow: 0 0 20px rgba(0,0,0,0.48);
+    transition: transform 0.3s ease-in-out;
+  }
+  .fi-sidebar-nav a {
+    color: rgb(var(--fi-color-gray-100));
+    border-radius: 0.5rem;
+    margin: 4px 8px;
+    padding: 0.8rem 1rem;
+    position: relative;
+    overflow: hidden;
+    transition:
+      background-color 0.25s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .fi-sidebar-nav a:hover {
+    background-color: rgba(var(--fi-color-primary-600), 0.12);
+    transform: scale(1.02);
+  }
+  .fi-sidebar-nav a.fi-active {
+    background-color: rgba(var(--fi-color-primary), 0.9);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(var(--fi-color-primary), 0.2);
+  }
+
+  /* Header base */
+  .fi-header {
+    background-color: rgb(var(--fi-header-background));
+    border-bottom: 1px solid rgb(var(--fi-color-gray-100));
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    min-height: 4.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+
+  /* Brand */
+  .fi-header .fi-brand img,
+  .fi-sidebar .fi-brand img {
+    max-height: 100%;
+    object-fit: contain;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  /* Cards / Widgets base */
+  .fi-main .fi-card,
+  .fi-main .fi-widget,
+  .fi-main .fi-stats-overview,
+  .fi-main .fi-stats-overview > div {
+    background-color: #fff;
+    color: rgb(var(--fi-color-gray-900));
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .fi-main .fi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .fi-card h2,
+  .fi-widget h2,
+  .fi-stats-overview h2 {
+    color: rgb(var(--fi-color-primary));
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Botones */
+  .fi-btn-primary {
+    background-color: rgb(var(--fi-color-primary));
+    border-color:     rgb(var(--fi-color-primary));
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.6rem;
+    padding: 0.6rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(var(--fi-color-primary), 0.2);
+    transition: all 0.25s ease;
+  }
+  .fi-btn-primary:hover {
+    background-color: rgb(var(--fi-color-primary-600));
+    border-color:     rgb(var(--fi-color-primary-600));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(var(--fi-color-primary), 0.3);
+  }
+
+  /* Inputs / Selects */
+  .fi-input,
+  .fi-select {
+    border: 1px solid rgb(var(--fi-color-gray-100));
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: rgb(var(--fi-color-gray-900));
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .fi-input:focus,
+  .fi-select:focus {
+    border-color: rgb(var(--fi-color-primary));
+    box-shadow: 0 0 0 4px rgba(var(--fi-color-primary), 0.2);
+  }
+
+  /* Tablas */
+  .fi-table thead th {
+    background-color: rgb(var(--fi-color-gray-50));
+    color: rgb(var(--fi-color-gray-900));
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .fi-table tbody tr:hover {
+    background-color: rgb(var(--fi-color-gray-100));
+  }
+
+  /* Badges */
+  .fi-badge {
+    border-radius: 9999px;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  .fi-badge[data-color="success"] { background-color: #28a745; color: #fff; }
+  .fi-badge[data-color="warning"] { background-color: #ffc107; color: #000; }
+  .fi-badge[data-color="danger"]  { background-color: rgb(var(--fi-color-primary)); color: #fff; }
+  .fi-badge[data-color="info"]    { background-color: #17a2b8; color: #fff; }
+}
