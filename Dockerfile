@@ -18,7 +18,12 @@ COPY . /var/www/html
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Instalar dependencias PHP (sí corremos scripts de artisan aquí)
+# 🔹 Crear directorios necesarios antes de instalar dependencias
+RUN mkdir -p bootstrap/cache \
+    && mkdir -p storage/framework/{cache,sessions,views} \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+# Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
 # 🚫 Eliminamos npm install y npm run build (innecesarios para Filament)
