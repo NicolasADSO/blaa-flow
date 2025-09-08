@@ -20,7 +20,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Permitir que Composer se ejecute como root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔹 Crear carpetas de cache/sesiones/views ANTES de composer install
+# 🔹 Crear carpetas necesarias ANTES de composer install
 RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p database \
