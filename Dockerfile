@@ -10,37 +10,28 @@ RUN apt-get update && apt-get install -y \
 # Configurar Apache
 RUN a2enmod rewrite
 
-# Configurar DocumentRoot de Laravel (public/)
-WORKDIR /var/www/html
+# Copiar archivos de la app
 COPY . /var/www/html
+WORKDIR /var/www/html
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Permitir que Composer se ejecute como root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔹 Crear directorios necesarios antes de instalar dependencias
-RUN mkdir -p bootstrap/cache \
-    && mkdir -p storage/framework/{cache,sessions,views} \
-    && chown -R www-data:www-data storage bootstrap/cache
-
-
-# 🔹 Crear directorios antes de composer install
+# 🔹 Crear directorios necesarios ANTES de composer install
 RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p database \
+    && chmod -R 775 storage bootstrap/cache database \
     && chown -R www-data:www-data storage bootstrap/cache database
 
-
-# Instalar dependencias PHP
+# Instalar dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
-
-# 🚫 Eliminamos npm install y npm run build (innecesarios para Filament)
-
-# Ajustar permisos de storage y bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exponer puerto
 EXPOSE 80
 
-# Iniciar con Apache en vez de php artisan serve
-CMD ["apache2-foreground"]
+# Comando por defecto
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
