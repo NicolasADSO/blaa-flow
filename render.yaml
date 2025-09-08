@@ -5,6 +5,9 @@ services:
     plan: free
     branch: main
     healthCheckPath: /
+    disks:
+      - name: database
+        mountPath: /var/www/html/database
     envVars:
       - key: APP_ENV
         value: production
@@ -19,13 +22,19 @@ services:
       - key: DB_DATABASE
         value: /var/www/html/database/database.sqlite
       - key: CACHE_STORE
-        value: database
+        value: file # Cambiado de 'database' a 'file' para evitar dependencia de SQLite para caché
       - key: SESSION_DRIVER
-        value: database
+        value: file # Cambiado a 'file' para mayor simplicidad
       - key: QUEUE_CONNECTION
-        value: database
+        value: sync # Cambiado a 'sync' para evitar problemas con colas en SQLite
       - key: FILESYSTEM_DISK
         value: public
     startCommand: |
-      php artisan migrate --seed --force \
+      mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
+      && chown -R www-data:www-data storage bootstrap/cache database \
+      && chmod -R 775 storage bootstrap/cache database \
+      && touch database/database.sqlite \
+      && chown www-data:www-data database/database.sqlite \
+      && chmod 664 database/database.sqlite \
+      && php artisan migrate --seed --force \
       && exec php artisan serve --host=0.0.0.0 --port=80
