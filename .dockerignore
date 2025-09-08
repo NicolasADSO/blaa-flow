@@ -1,0 +1,31 @@
+# === Laravel build excludes ===
+/vendor
+/node_modules
+/public/hot
+/storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/debugbar/*
+/storage/testing/*
+
+# === Env & config ===
+.env
+.env.*
+!.env.example
+fly.toml
+
+# === Git & IDE ===
+.git
+.gitignore
+.gitattributes
+.github
+.vscode
+.idea
+
+# === OS & misc ===
+*.log
+*.DS_Store
+Thumbs.db
+*~
