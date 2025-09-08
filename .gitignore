@@ -1,10 +1,14 @@
+# Logs & OS
 *.log
 .DS_Store
+Thumbs.db
+
+# Env
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
+.env.*
+!.env.example
+
+# IDE / Editor
 /.fleet
 /.idea
 /.nova
@@ -12,35 +16,33 @@
 /.vscode
 /.zed
 /auth.json
+
+# Node / Frontend
 /node_modules
 /public/build
 /public/hot
 /public/storage
-/storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
-Thumbs.db
-# Laravel caches
-/bootstrap/cache/*.php
-/storage/framework/cache
-/storage/framework/sessions
-/storage/framework/views
-
-# Laravel testing
-.phpunit.result.cache
-.phpunit.cache
-
-# Coverage
-/coverage
-
-# Vite / front
 /.vite
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# Composer
-composer.lock
+# Laravel storage (runtime data)
+storage/*.key
+storage/pail
+storage/debugbar
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
 
+# Laravel cache
+/bootstrap/cache/
+
+# Testing & coverage
+.phpunit.result.cache
+.phpunit.cache
+/coverage
+
+# Composer
+# ⚠️ composer.lock DEBE estar versionado, no lo ignores
