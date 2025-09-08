@@ -27,7 +27,9 @@
 !phpunit.xml
 !.env.example
 
-# Excluir cosas pesadas/temporales
+# ⚠️ EXCLUIR enlaces/problemáticos y pesados
+/public/storage
+/storage
 /vendor
 /node_modules
 /public/hot
@@ -39,7 +41,7 @@
 /storage/debugbar/*
 /storage/testing/*
 
-# Env & config (ojo: .env.example ya se re-incluyó arriba)
+# Env (se incluye .env.example arriba)
 .env
 .env.*
 
