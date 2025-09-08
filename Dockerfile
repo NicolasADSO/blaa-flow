@@ -1,5 +1,5 @@
 # Imagen base de PHP 8.2 con Apache
-FROM php:8.2-apache
+FROM php:8.2-cli
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
@@ -7,8 +7,6 @@ RUN apt-get update && apt-get install -y \
     libicu-dev g++ \
     && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl intl bcmath
 
-# Configurar Apache
-RUN a2enmod rewrite
 
 # Copiar archivos de la app
 COPY . /var/www/html
