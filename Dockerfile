@@ -27,11 +27,16 @@ RUN mkdir -p bootstrap/cache \
     && chmod -R 775 bootstrap/cache storage database \
     && chown -R www-data:www-data bootstrap/cache storage database
 
-# Instalar dependencias de PHP
-RUN composer install --no-dev --optimize-autoloader
+# Instalar dependencias de PHP SIN correr scripts de Artisan todavía
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Exponer puerto
 EXPOSE 80
 
-# Comando por defecto
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+# 🔹 Ejecutar Artisan y migraciones SOLO cuando arranca el contenedor
+CMD php artisan package:discover --ansi \
+    && php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && php artisan migrate --seed --force \
+    && php artisan serve --host=0.0.0.0 --port=80
