@@ -40,3 +40,8 @@ EXPOSE 80
 
 # Comando por defecto (Render.yaml manejará migraciones y package:discover al arrancar)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+
+# Crear rutas necesarias de Laravel en build
+RUN mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} \
+    && chmod -R 775 bootstrap/cache storage \
+    && chown -R www-data:www-data bootstrap/cache storage
