@@ -15,7 +15,7 @@ WORKDIR /var/www/html
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Crear carpetas necesarias
+# Crear carpetas necesarias (cache, sesiones, vistas, database)
 RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p database \
@@ -25,9 +25,17 @@ RUN mkdir -p bootstrap/cache \
 # Instalar dependencias PHP (sin artisan aún)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Configurar Apache para que sirva Laravel desde /public
+# Configurar Apache para servir Laravel desde /public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's|/var/www/|/var/www/html/public|g' /etc/apache2/apache2.conf
+
+# 🔹 Habilitar mod_rewrite para que funcionen las rutas de Laravel
+RUN a2enmod rewrite \
+    && echo "<Directory /var/www/html/public>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>" > /etc/apache2/conf-available/laravel.conf \
+    && a2enconf laravel
 
 # Exponer puerto
 EXPOSE 80
