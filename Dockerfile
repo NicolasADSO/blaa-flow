@@ -7,10 +7,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev g++ \
     && docker-php-ext-install pdo pdo_mysql gd mbstring zip exif pcntl intl bcmath
 
-# Configurar Apache (habilitar mod_rewrite para Laravel)
-RUN a2enmod rewrite
-
-# Copiar archivos de la app
+# Copiar archivos del proyecto
 COPY . /var/www/html
 WORKDIR /var/www/html
 
@@ -18,17 +15,22 @@ WORKDIR /var/www/html
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Crear carpetas necesarias con permisos correctos ANTES de Composer
+# Crear carpetas necesarias
 RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p database \
     && chmod -R 775 bootstrap/cache storage database \
     && chown -R www-data:www-data bootstrap/cache storage database
 
-# Instalar dependencias PHP (sin ejecutar scripts artisan aún)
+# Instalar dependencias PHP (sin artisan aún)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Exponer puerto 80 (Apache ya lo escucha)
+# Configurar Apache para que sirva Laravel desde /public
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's|/var/www/|/var/www/html/public|g' /etc/apache2/apache2.conf
+
+# Exponer puerto
 EXPOSE 80
 
-# El arranque lo controla render.yaml (startCommand)
+# Usar Apache como servidor
+CMD ["apache2-foreground"]
