@@ -1,4 +1,33 @@
-# === Laravel build excludes ===
+# Ignora TODO por defecto
+**
+
+# Re-incluir solo lo necesario (carpetas + contenido)
+!app
+!app/**
+!bootstrap
+!bootstrap/**
+!config
+!config/**
+!database
+!database/**
+!public
+!public/**
+!resources
+!resources/**
+!routes
+!routes/**
+
+# Re-incluir archivos raíz necesarios
+!artisan
+!composer.json
+!composer.lock
+!package.json
+!package-lock.json
+!vite.config.js
+!phpunit.xml
+!.env.example
+
+# Excluir cosas pesadas/temporales
 /vendor
 /node_modules
 /public/hot
@@ -10,13 +39,11 @@
 /storage/debugbar/*
 /storage/testing/*
 
-# === Env & config ===
+# Env & config (ojo: .env.example ya se re-incluyó arriba)
 .env
 .env.*
-!.env.example
-fly.toml
 
-# === Git & IDE ===
+# Git & IDE
 .git
 .gitignore
 .gitattributes
@@ -24,7 +51,7 @@ fly.toml
 .vscode
 .idea
 
-# === OS & misc ===
+# OS & miscelánea
 *.log
 *.DS_Store
 Thumbs.db
