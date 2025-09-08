@@ -21,9 +21,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Crear rutas necesarias antes de instalar
-RUN mkdir -p storage/framework/{cache/data,sessions,views} bootstrap/cache database \
-    && chown -R www-data:www-data storage bootstrap/cache database \
-    && chmod -R 775 storage bootstrap/cache database
+RUN mkdir -p /var/www/html/storage/framework/cache/data /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/bootstrap/cache /var/www/html/database \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 # Instalar dependencias de PHP (sin correr scripts de Artisan en build)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
@@ -37,13 +37,13 @@ RUN apt-get install -y nodejs npm \
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
+# Crear archivo SQLite si no existe
+RUN touch /var/www/html/database/database.sqlite \
+    && chown www-data:www-data /var/www/html/database/database.sqlite \
+    && chmod 664 /var/www/html/database/database.sqlite
+
 # Exponer puerto
 EXPOSE 80
-
-# Crear archivo SQLite si no existe
-RUN touch database/database.sqlite \
-    && chown www-data:www-data database/database.sqlite \
-    && chmod 664 database/database.sqlite
 
 # Comando por defecto
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]

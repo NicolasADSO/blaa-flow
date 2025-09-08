@@ -8,6 +8,10 @@ services:
     disks:
       - name: database
         mountPath: /var/www/html/database
+      - name: storage
+        mountPath: /var/www/html/storage
+      - name: bootstrap-cache
+        mountPath: /var/www/html/bootstrap/cache
     envVars:
       - key: APP_ENV
         value: production
@@ -22,19 +26,19 @@ services:
       - key: DB_DATABASE
         value: /var/www/html/database/database.sqlite
       - key: CACHE_STORE
-        value: file # Cambiado de 'database' a 'file' para evitar dependencia de SQLite para caché
+        value: file
       - key: SESSION_DRIVER
-        value: file # Cambiado a 'file' para mayor simplicidad
+        value: file
       - key: QUEUE_CONNECTION
-        value: sync # Cambiado a 'sync' para evitar problemas con colas en SQLite
+        value: sync
       - key: FILESYSTEM_DISK
         value: public
     startCommand: |
-      mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache \
-      && chown -R www-data:www-data storage bootstrap/cache database \
-      && chmod -R 775 storage bootstrap/cache database \
-      && touch database/database.sqlite \
-      && chown www-data:www-data database/database.sqlite \
-      && chmod 664 database/database.sqlite \
+      mkdir -p /var/www/html/storage/framework/cache/data /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/bootstrap/cache \
+      && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
+      && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
+      && touch /var/www/html/database/database.sqlite \
+      && chown www-data:www-data /var/www/html/database/database.sqlite \
+      && chmod 664 /var/www/html/database/database.sqlite \
       && php artisan migrate --seed --force \
       && exec php artisan serve --host=0.0.0.0 --port=80
