@@ -1,0 +1,46 @@
+app = "blaa-flow"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  APP_URL = "https://blaa-flow.fly.dev"
+  DB_CONNECTION = "sqlite"
+  DB_DATABASE = "/var/www/html/database/database.sqlite"
+  CACHE_STORE = "file"
+  SESSION_DRIVER = "file"
+  QUEUE_CONNECTION = "sync"
+  FILESYSTEM_DISK = "public"
+
+[http_service]
+  internal_port = 8080   # 👈 Fly ahora escucha el mismo puerto que Apache
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = "stop"
+  min_machines_running = 0
+  processes = ["app"]
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[[services_checks]]
+  protocol = "http"
+  path = "/"
+  interval = "15s"
+  timeout = "2s"
+  grace_period = "30s"
+  port = 8080   # 👈 también corregido
+
+[deploy]
+  release_command = "bash -lc 'mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache database && touch database/database.sqlite && chmod 664 database/database.sqlite && chown -R www-data:www-data storage bootstrap/cache database && php artisan config:clear && php artisan migrate --force --no-interaction && php artisan storage:link || true'"

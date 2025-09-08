@@ -37,8 +37,12 @@ RUN a2enmod rewrite \
     </Directory>" > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel
 
-# Exponer puerto
-EXPOSE 80
+# 🔹 Cambiar Apache para escuchar en 8080 en lugar de 80
+RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf \
+    && sed -i 's/:80/:8080/g' /etc/apache2/sites-available/000-default.conf
+
+# Exponer puerto 8080
+EXPOSE 8080
 
 # Usar Apache como servidor
 CMD ["apache2-foreground"]
