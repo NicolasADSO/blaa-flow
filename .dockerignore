@@ -1,23 +1,16 @@
-# Ignora TODO por defecto
+# --- Ignora TODO por defecto ---
 **
 
-# Re-incluir solo lo necesario (carpetas + contenido)
+# --- Re-incluir solo lo necesario ---
 !app
-!app/**
 !bootstrap
-!bootstrap/**
 !config
-!config/**
 !database
-!database/**
 !public
-!public/**
 !resources
-!resources/**
 !routes
-!routes/**
 
-# Re-incluir archivos raíz necesarios
+# Archivos raíz importantes
 !artisan
 !composer.json
 !composer.lock
@@ -27,25 +20,25 @@
 !phpunit.xml
 !.env.example
 
-# ⚠️ EXCLUIR enlaces/problemáticos y pesados
+# --- Excluir runtime / innecesario ---
 /public/storage
 /storage
 /vendor
 /node_modules
 /public/hot
+/storage/debugbar
+/storage/testing
 /storage/*.key
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/storage/logs/*
-/storage/debugbar/*
-/storage/testing/*
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
 
-# Env (se incluye .env.example arriba)
-.env
-.env.*
+# --- Env ---
+.env*
+!.env.example   # re-incluir explícitamente el de ejemplo
 
-# Git & IDE
+# --- Git & IDE ---
 .git
 .gitignore
 .gitattributes
@@ -53,7 +46,7 @@
 .vscode
 .idea
 
-# OS & miscelánea
+# --- OS & miscelánea ---
 *.log
 *.DS_Store
 Thumbs.db
