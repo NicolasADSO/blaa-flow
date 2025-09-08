@@ -15,7 +15,7 @@ app = "blaa-flow"
   FILESYSTEM_DISK = "public"
 
 [http_service]
-  internal_port = 8080   # 👈 Fly ahora escucha el mismo puerto que Apache
+  internal_port = 8080   # 👈 Fly escucha en el mismo puerto que Apache
   force_https = true
   auto_start_machines = true
   auto_stop_machines = "stop"
@@ -40,8 +40,21 @@ app = "blaa-flow"
   interval = "15s"
   timeout = "2s"
   grace_period = "30s"
-  port = 8080   # 👈 también corregido
+  port = 8080   # 👈 corregido también
 
 [deploy]
-  release_command = "bash -lc 'mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache database && touch database/database.sqlite && chmod 664 database/database.sqlite && chown -R www-data:www-data storage bootstrap/cache database && php artisan config:clear && php artisan migrate --force --no-interaction && php artisan storage:link || true'"
-
+  release_command = """
+    bash -lc '
+      mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache database &&
+      touch database/database.sqlite &&
+      chmod 664 database/database.sqlite &&
+      chown -R www-data:www-data storage bootstrap/cache database &&
+      php artisan config:clear &&
+      # ⚡ Genera APP_KEY solo si no existe
+      if ! grep -q "base64:" <<< "$APP_KEY"; then
+        php artisan key:generate --force
+      fi &&
+      php artisan migrate --force --no-interaction &&
+      php artisan storage:link || true
+    '
+  """
