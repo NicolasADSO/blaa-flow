@@ -17,6 +17,9 @@ WORKDIR /var/www/html
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Permitir que Composer se ejecute como root
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Instalar dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
 
