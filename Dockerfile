@@ -23,6 +23,14 @@ RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && chown -R www-data:www-data storage bootstrap/cache
 
+
+# 🔹 Crear directorios antes de composer install
+RUN mkdir -p bootstrap/cache \
+    && mkdir -p storage/framework/{cache,sessions,views} \
+    && mkdir -p database \
+    && chown -R www-data:www-data storage bootstrap/cache database
+
+
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
