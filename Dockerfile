@@ -16,27 +16,19 @@ WORKDIR /var/www/html
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Permitir que Composer se ejecute como root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔹 Crear carpetas necesarias ANTES de composer install
+# Crear carpetas necesarias con permisos correctos ANTES de Composer
 RUN mkdir -p bootstrap/cache \
     && mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p database \
     && chmod -R 775 bootstrap/cache storage database \
     && chown -R www-data:www-data bootstrap/cache storage database
 
-# Instalar dependencias de PHP SIN correr scripts de Artisan todavía
+# Instalar dependencias PHP (sin ejecutar scripts artisan aún)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Exponer puerto
 EXPOSE 80
 
-# 🔹 Ejecutar Artisan y migraciones SOLO cuando arranca el contenedor
-CMD php artisan package:discover --ansi \
-    && php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear \
-    && php artisan migrate --seed --force \
-    && php artisan serve --host=0.0.0.0 --port=80
+# ⚡ El comando final lo controlamos desde render.yaml (startCommand)
