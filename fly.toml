@@ -50,6 +50,9 @@ app = "blaa-flow"
       chmod 664 database/database.sqlite &&
       chown -R www-data:www-data storage bootstrap/cache database &&
       php artisan config:clear &&
+      php artisan cache:clear &&
+      php artisan route:clear &&
+      php artisan view:clear &&
       # ⚡ Genera APP_KEY solo si no existe
       if ! grep -q "base64:" <<< "$APP_KEY"; then
         php artisan key:generate --force
