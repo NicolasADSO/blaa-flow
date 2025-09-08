@@ -10,40 +10,24 @@ RUN apt-get update && apt-get install -y \
 # Configurar Apache
 RUN a2enmod rewrite
 
-# Copiar archivos de la app
-COPY . /var/www/html
+# Configurar DocumentRoot de Laravel (public/)
 WORKDIR /var/www/html
+COPY . /var/www/html
 
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Permitir que Composer se ejecute como root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Crear rutas necesarias antes de instalar
-RUN mkdir -p /var/www/html/storage/framework/cache/data /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/bootstrap/cache /var/www/html/database \
-    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+# Instalar dependencias PHP (sí corremos scripts de artisan aquí)
+RUN composer install --no-dev --optimize-autoloader
 
-# Instalar dependencias de PHP (sin correr scripts de Artisan en build)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# 🚫 Eliminamos npm install y npm run build (innecesarios para Filament)
 
-# Generar assets de Vite
-RUN apt-get install -y nodejs npm \
-    && npm install \
-    && npm run build
-
-# Configurar permisos de Laravel (repetimos para asegurar)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
-
-# Crear archivo SQLite si no existe
-RUN touch /var/www/html/database/database.sqlite \
-    && chown www-data:www-data /var/www/html/database/database.sqlite \
-    && chmod 664 /var/www/html/database/database.sqlite
+# Ajustar permisos de storage y bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exponer puerto
 EXPOSE 80
 
-# Comando por defecto
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+# Iniciar con Apache en vez de php artisan serve
+CMD ["apache2-foreground"]
