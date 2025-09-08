@@ -20,8 +20,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Permitir que Composer se ejecute como root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Instalar dependencias de PHP
-RUN composer install --no-dev --optimize-autoloader
+# Crear rutas necesarias antes de instalar
+RUN mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+# Instalar dependencias de PHP (sin correr scripts de Artisan en build)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Generar assets de Vite
 RUN apt-get install -y nodejs npm \
@@ -34,5 +38,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Exponer puerto
 EXPOSE 80
 
-# Comando por defecto (Render.yaml manejará migraciones)
+# Comando por defecto (Render.yaml manejará migraciones y package:discover al arrancar)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
